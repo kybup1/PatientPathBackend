@@ -1,0 +1,15 @@
+{
+
+ 
+    "username": "root",
+
+    "password": "root",
+
+    "database": "patientpath",
+
+    "host": "127.0.0.1",
+    
+    "port": "5000",
+
+    "dialect": "mysql"
+}
