@@ -10,17 +10,19 @@ var patientRouter = require("./app/routers/patientRouter");
 var appointmentRouter = require("./app/routers/appointmentrouter");
 var institutionRouter = require("./app/routers/institutionRouter");
 var treatmentepisodeRouter = require("./app/routers/treatmentepisodeRouter");
+var loginRouter = require("./app/routers/loginRouter");
+var auth = require("./app/auth");
 
 //For BodyParser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 console.log("start");
-app.use("/patient", patientRouter);
-app.use('/appointment', appointmentRouter);
-app.use('/institution', institutionRouter);
-app.use('/treatmentepisode', treatmentepisodeRouter)
-
+app.use("/patient", auth.authenticate, patientRouter);
+app.use('/appointment', auth.authenticate, appointmentRouter);
+app.use('/institution', auth.authenticate, institutionRouter);
+app.use('/treatmentepisode', auth.authenticate, treatmentepisodeRouter);
+app.use('/', loginRouter);
 app.listen(54321, function(err) {
     
 });

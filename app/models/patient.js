@@ -23,11 +23,6 @@ module.exports = function(sequelize, Sequelize) {
             validate: {
                 isEmail: true
             }
-        },
-        
-        userid: {
-            type: Sequelize.INTEGER,
-            notNull: true
         }
     });
  

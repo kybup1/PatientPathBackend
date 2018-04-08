@@ -1,11 +1,12 @@
 var express = require("express");
 var app = express();
 var db = require("../models/index");
+var auth = require("../auth");
 
 var appointmentRouter = express.Router();
 
 appointmentRouter.get('/', function(req, res) {
-    var patid = req.get("patid");
+    var patid = auth.getPatId(req.get("token"));
     db.appointment.findAll({
         where : {"patid" : patid}
     }) .then(appointments => {
@@ -14,7 +15,7 @@ appointmentRouter.get('/', function(req, res) {
 })
 
 appointmentRouter.get('/full', function(req, res) {
-    var patid = req.get("patid");
+    var patid = auth.getPatId(req.get("token"));
     db.appointment.findAll({
         where : {"patid" : patid},
         include: [{ all: true }]
@@ -24,7 +25,7 @@ appointmentRouter.get('/full', function(req, res) {
 })
 
 appointmentRouter.get('/:id', function(req, res) {
-    var patid = req.header.patid;
+    var patid = auth.getPatId(req.get("token"));
     var id = req.body.id;
     db.appointment.find({
         where : {'patid' : patid, 
@@ -35,7 +36,7 @@ appointmentRouter.get('/:id', function(req, res) {
 })
 
 appointmentRouter.get('/:id/full', function(req, res) {
-    var patid = req.header.patid;
+    var patid = auth.getPatId(req.get("token"));
     var id = req.body.id;
     db.appointment.find({
         where : {'patid' : patid, 
@@ -47,12 +48,13 @@ appointmentRouter.get('/:id/full', function(req, res) {
 })
 
 appointmentRouter.post('/', function(req, res) {
+    var patid = auth.getPatId(req.get("token"));
     db.appointment.create({
         "name" : req.body.name,
         "description" : req.body.description,
         "startdate" : req.body.startdate,
         "enddate" : req.body.enddate,
-        "patid" : req.get("patid"),
+        "patid" : patid,
         "episodeid": req.get("episodeid")
     }).then(response => {
         res.json(response)

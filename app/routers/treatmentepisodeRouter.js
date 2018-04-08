@@ -1,11 +1,12 @@
 var express = require("express");
 var app = express();
 var db = require("../models/index");
+var auth = require("../auth");
 
 var treatmentepisodeRouter = express.Router();
 
 treatmentepisodeRouter.get("/", function(req, res){
-    var patid = req.get("patid");
+    var patid = auth.getPatId(req.get("token"));
     db.treatmentepisode.findAll({
         where : {"patid" : patid}
     }).then (treatmentepisodes => {
@@ -14,7 +15,7 @@ treatmentepisodeRouter.get("/", function(req, res){
 })
 
 treatmentepisodeRouter.get("/full", function(req, res){
-    var patid = req.get("patid");
+    var patid = auth.getPatId(req.get("token"));
     db.treatmentepisode.findAll({
         where : {"patid" : patid},
         include : [{all:true}]
@@ -25,7 +26,7 @@ treatmentepisodeRouter.get("/full", function(req, res){
 
 treatmentepisodeRouter.get("/:id", function(req, res){
     var id = req.params.id;
-    var patid = req.get("patid");
+    var patid = auth.getPatId(req.get("token"));
     db.treatmentepisode.findAll({
         where : {"patid" : patid,
                 "episodeid" : id}
@@ -36,7 +37,7 @@ treatmentepisodeRouter.get("/:id", function(req, res){
 
 treatmentepisodeRouter.get("/:id/full", function(req, res){
     var id = req.params.id;
-    var patid = req.get("patid");
+    var patid = auth.getPatId(req.get("token"));
     db.treatmentepisode.findAll({
         where : {"patid" : patid,
                 "episodeid" : id},
@@ -47,9 +48,10 @@ treatmentepisodeRouter.get("/:id/full", function(req, res){
 })
 
 treatmentepisodeRouter.post("/", function(req, res){
+    var patid = auth.getPatId(req.get("token"));
     db.treatmentepisode.create({
         "name" : req.body.name,
-        "patid" : req.get("patid")
+        "patid" : patid
     }).then(result => res.json({
         error: false,
         message: 'created!'

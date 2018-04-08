@@ -1,19 +1,12 @@
 var express = require("express");
 var app = express();
 var db = require("../models/index");
+var auth = require("../auth");
 
 var patientRouter = express.Router();
 
 patientRouter.get("/", function(req, res) {
-    db.patient.findAll()
-    .then(patients => {
-        res.json(patients)
-    })
-});
-
-patientRouter.get("/:id", function(req, res) {
-    var id = req.params.id;
-    console.log(id);
+    var id = auth.getPatId(req.get("token"));
     db.patient.find({
         where : {"patid" : id}
     })
@@ -22,8 +15,8 @@ patientRouter.get("/:id", function(req, res) {
     });
 });
 
-patientRouter.get("/:id/full", function(req, res) {
-    var id = req.params.id;
+patientRouter.get("/full", function(req, res) {
+    var id = auth.getPatId(req.get("token"));
     db.patient.find({
         where : {"patid" : id},
         include: [{ all: true }]

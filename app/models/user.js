@@ -24,7 +24,10 @@ module.exports = function(sequelize, Sequelize) {
         last_activity: {
             type: Sequelize.DATE
         },
-        foreignid :{
+        patid :{
+            type: Sequelize.INTEGER,
+        },
+        practid :{
             type: Sequelize.INTEGER,
         }
  
