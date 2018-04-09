@@ -10,6 +10,7 @@ var patientRouter = require("./app/routers/patientRouter");
 var appointmentRouter = require("./app/routers/appointmentrouter");
 var institutionRouter = require("./app/routers/institutionRouter");
 var treatmentepisodeRouter = require("./app/routers/treatmentepisodeRouter");
+var stationarycaseRouter = require("./app/routers/stationarycaseRouter");
 var loginRouter = require("./app/routers/loginRouter");
 var auth = require("./app/auth");
 
@@ -22,6 +23,7 @@ app.use("/patient", auth.authenticate, patientRouter);
 app.use('/appointment', auth.authenticate, appointmentRouter);
 app.use('/institution', auth.authenticate, institutionRouter);
 app.use('/treatmentepisode', auth.authenticate, treatmentepisodeRouter);
+app.use('/stationarycase', auth.authenticate, stationarycaseRouter);
 app.use('/', loginRouter);
 app.listen(54321, function(err) {
     
@@ -31,4 +33,44 @@ app.listen(54321, function(err) {
 
 //Dropping and creating the Database. CARFULLY: testdata wont be loaded again
 //models.sequelize.sync({force:true});
+
+// db.institution.create({
+//     "name" : "Praxis Dr. Wenger",
+//     "Description" : "Hausarztpraxis von Dr. Wenger",
+//     "address" : "Höheweg 80, 2502 Biel",
+//     "category" : "Hausarzt",
+//     "phone" : "035 684 15 65"
+// }).then(function(institution){
+//     db.practicioner.create({
+//         "firstname" : "Hans",
+//         "lastname" : "Wenger",
+//         "title" : "Dr. med",
+//         "role" : "Hausarzt",
+//         "phone" : "068 8987 898498",
+//         "email" : "drwenger@bluwin.ch"
+//     }).then(function(practicioner){
+//         practicioner.setInstitution(institution);
+//     })
+// });
+
+// db.institution.create({
+//     "name" : "Klinik Höheweg",
+//     "Description" : "Spital am Höheweg in Biel",
+//     "address" : "Höheweg 80, 2502 Biel",
+//     "category" : "Spital",
+//     "phone" : "068 844 89 65",
+//     "email" : "info@klinikhoeheweg.ch"
+// }).then(function(institution){
+//     db.practicioner.create({
+//         "firstname" : "Hüft",
+//         "lastname" : "Raus",
+//         "title" : "Dr. med",
+//         "role" : "Chirurg",
+//         "phone" : "098 8987 456 4565",
+//     }).then(function(practicioner){
+//         practicioner.setInstitution(institution);
+//     })
+// });
+
+
 

@@ -55,7 +55,10 @@ appointmentRouter.post('/', function(req, res) {
         "startdate" : req.body.startdate,
         "enddate" : req.body.enddate,
         "patid" : patid,
-        "episodeid": req.get("episodeid")
+        "episodeid": req.body.episodeid,
+        "stationarycaseid" : req.body.stationarycaseid,
+        "instid" : req.body.instid,
+        "practid" : req.body.practid
     }).then(response => {
         res.json(response)
     })
@@ -63,8 +66,9 @@ appointmentRouter.post('/', function(req, res) {
 
 appointmentRouter.put('/:id/', function(req, res){
     var id = req.params.id;
+    var patid = auth.getPatId(req.get("token"));
     db.appointment.update(req.body,
-        {where : {"aid":id}}    
+        {where : {"aid":id, "patid":patid}}    
     ).then(result => res.json({
         error: false,
         message: 'updated!'
@@ -77,8 +81,9 @@ appointmentRouter.put('/:id/', function(req, res){
 
 appointmentRouter.delete("/:id", function(req, res){
     var id = req.params.id;
+    var patid = auth.getPatId(req.get("token"));
     db.appointment.destroy({
-        where:{"aid":id}
+        where:{"aid":id, "patid" : patid}
     }).then(result => res.json({
         error: false,
         message: 'deleted!'

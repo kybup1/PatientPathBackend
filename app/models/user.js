@@ -17,16 +17,10 @@ module.exports = function(sequelize, Sequelize) {
             notNull: true
         },
 
-        token: {
-            type: Sequelize.STRING,
-        },
- 
-        last_activity: {
-            type: Sequelize.DATE
-        },
         patid :{
             type: Sequelize.INTEGER,
         },
+        
         practid :{
             type: Sequelize.INTEGER,
         }

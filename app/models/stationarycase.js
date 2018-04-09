@@ -1,42 +1,31 @@
 module.exports = function(sequelize, Sequelize) {
  
-    var appointment = sequelize.define('appointment', {
+    var stationarycase = sequelize.define('stationarycase', {
  
-        aid: {
+        caseid: {
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER
         },
  
         name: {
-            type: Sequelize.TEXT,
+            type: Sequelize.STRING,
             notEmpty: true
         },
 
         description: {
-            type: Sequelize.TEXT,
+            type: Sequelize.STRING
         },
- 
+
         startdate: {
-            type: Sequelize.DATE,
-            notEmpty: true
+            type: Sequelize.DATE
         },
 
         enddate: {
-            type: Sequelize.DATE,
+            type: Sequelize.DATE
         },
 
         patid: {
-            type: Sequelize.INTEGER,
-            notNull: true
-        },
-
-        instid: {
-            type: Sequelize.INTEGER,
-            notNull: true
-        },
-
-        practid: {
             type: Sequelize.INTEGER,
             notNull: true
         },
@@ -46,15 +35,17 @@ module.exports = function(sequelize, Sequelize) {
             notNull: true
         },
 
-        chklstid: {
+        instid: {
             type: Sequelize.INTEGER,
+            notNull: true
         },
-
-        stationarycaseid: {
+        
+        externalcaseid: {
             type: Sequelize.INTEGER
         }
+ 
     });
  
-    return appointment;
+    return stationarycase;
  
 }
