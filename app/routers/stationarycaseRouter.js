@@ -8,7 +8,8 @@ var stationarycaseRouter = express.Router();
 stationarycaseRouter.get("/", function(req, res){
     var patid = auth.getPatId(req.get("token"));
     db.statioarycase.findAll({
-        where : {"patid" : patid}
+        where : {"patid" : patid},
+        order : ['startdate']
     }).then (stationarycase => {
         res.json(stationarycase)
     })
@@ -18,6 +19,7 @@ stationarycaseRouter.get("/full", function(req, res){
     var patid = auth.getPatId(req.get("token"));
     db.stationarycase.findAll({
         where : {"patid" : patid},
+        order : ['startdate'],
         include : [{all:true}]
     }).then (stationarycase => {
         res.json(stationarycase)

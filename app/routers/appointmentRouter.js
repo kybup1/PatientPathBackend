@@ -8,7 +8,7 @@ var appointmentRouter = express.Router();
 appointmentRouter.get('/', function(req, res) {
     var patid = auth.getPatId(req.get("token"));
     db.appointment.findAll({
-        where : {"patid" : patid}
+        where : {"patid" : patid}, order : ['startdate']
     }) .then(appointments => {
         res.json(appointments)
     })
@@ -18,6 +18,7 @@ appointmentRouter.get('/full', function(req, res) {
     var patid = auth.getPatId(req.get("token"));
     db.appointment.findAll({
         where : {"patid" : patid},
+        order : ['startdate'],
         include: [{ all: true }]
     }) .then(appointments => {
         res.json(appointments)
