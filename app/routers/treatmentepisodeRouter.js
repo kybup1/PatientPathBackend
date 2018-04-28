@@ -6,7 +6,7 @@ var auth = require("../auth");
 var treatmentepisodeRouter = express.Router();
 
 treatmentepisodeRouter.get("/", function(req, res){
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
     db.treatmentepisode.findAll({
         where : {"patid" : patid}
     }).then (treatmentepisodes => {
@@ -15,7 +15,7 @@ treatmentepisodeRouter.get("/", function(req, res){
 })
 
 treatmentepisodeRouter.get("/full", function(req, res){
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
     db.treatmentepisode.findAll({
         where : {"patid" : patid},
         include : [{all:true}]
@@ -26,7 +26,7 @@ treatmentepisodeRouter.get("/full", function(req, res){
 
 treatmentepisodeRouter.get("/:id", function(req, res){
     var id = req.params.id;
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
     db.treatmentepisode.findAll({
         where : {"patid" : patid,
                 "episodeid" : id}
@@ -37,7 +37,7 @@ treatmentepisodeRouter.get("/:id", function(req, res){
 
 treatmentepisodeRouter.get("/:id/full", function(req, res){
     var id = req.params.id;
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
     db.treatmentepisode.findAll({
         where : {"patid" : patid,
                 "episodeid" : id},
@@ -48,18 +48,25 @@ treatmentepisodeRouter.get("/:id/full", function(req, res){
 })
 
 treatmentepisodeRouter.post("/", function(req, res){
-    var patid = auth.getPatId(req.get("token"));
-    db.treatmentepisode.create({
-        "name" : req.body.name,
-        "patid" : patid
-    }).then(result => res.json({
-        error: false,
-        message: 'created!'
-    }))
-    .catch(error => res.json({
-        error: true,
-        error: error
-    }));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
+    if(!req.body.name){
+        res.json({
+            error : "true",
+            message : "Please provide the treatmentepisode name in the body"
+        })
+    } else {
+        db.treatmentepisode.create({
+            "name" : req.body.name,
+            "patid" : patid
+        }).then(result => res.json({
+            error: false,
+            message: 'created!'
+        }))
+        .catch(error => res.json({
+            error: true,
+            error: error
+        }));
+    }
 })
 
 treatmentepisodeRouter.put("/:id", function(req, res){

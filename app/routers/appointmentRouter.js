@@ -2,32 +2,64 @@ var express = require("express");
 var app = express();
 var db = require("../models/index");
 var auth = require("../auth");
+const Op = db.Sequelize.Op;
+
 
 var appointmentRouter = express.Router();
 
 appointmentRouter.get('/', function(req, res) {
-    var patid = auth.getPatId(req.get("token"));
-    db.appointment.findAll({
-        where : {"patid" : patid}, order : ['startdate']
-    }) .then(appointments => {
-        res.json(appointments)
-    })
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
+    var practid = auth.getPractId(req.get("token"));
+    if(practid != null){
+        db.appointment.findAll({
+            where : {
+                "practid" : practid
+            }, 
+            order : ['startdate']
+        }) .then(appointments => {
+            res.json(appointments)
+        })
+    } else {
+        db.appointment.findAll({
+            where : {
+                "patid" : patid,
+            }, 
+            order : ['startdate']
+        }) .then(appointments => {
+            res.json(appointments)
+        })
+    }
 })
 
 appointmentRouter.get('/full', function(req, res) {
     var patid = auth.getPatId(req.get("token"));
-    db.appointment.findAll({
-        where : {"patid" : patid},
-        order : ['startdate'],
-        include: [{ all: true }]
-    }) .then(appointments => {
-        res.json(appointments)
-    })
+    var practid = auth.getPractId(req.get("token"));
+    if(practid != null){
+        db.appointment.findAll({
+            where : {
+                "practid" : practid
+            }, 
+            order : ['startdate'],
+            include : [{all : true}]
+        }) .then(appointments => {
+            res.json(appointments)
+        })
+    } else {
+        db.appointment.findAll({
+            where : {
+                "patid" : patid,
+            }, 
+            order : ['startdate'],
+            include : [{all : true}]
+        }) .then(appointments => {
+            res.json(appointments)
+        })
+    }
 })
 
 appointmentRouter.get('/:id', function(req, res) {
     var patid = auth.getPatId(req.get("token"));
-    var id = req.body.id;
+    var id = req.params.id;
     db.appointment.find({
         where : {'patid' : patid, 
         'aid' : id}
@@ -38,7 +70,7 @@ appointmentRouter.get('/:id', function(req, res) {
 
 appointmentRouter.get('/:id/full', function(req, res) {
     var patid = auth.getPatId(req.get("token"));
-    var id = req.body.id;
+    var id = req.params.id;
     db.appointment.find({
         where : {'patid' : patid, 
         'aid' : id},
@@ -49,7 +81,8 @@ appointmentRouter.get('/:id/full', function(req, res) {
 })
 
 appointmentRouter.post('/', function(req, res) {
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.body.patid;
+    var practid = auth.getPractId(req.get("token")) || req.body.practid;
     db.appointment.create({
         "name" : req.body.name,
         "description" : req.body.description,
@@ -59,7 +92,7 @@ appointmentRouter.post('/', function(req, res) {
         "episodeid": req.body.episodeid,
         "stationarycaseid" : req.body.stationarycaseid,
         "instid" : req.body.instid,
-        "practid" : req.body.practid
+        "practid" : practid
     }).then(response => {
         res.json(response)
     })
@@ -67,7 +100,8 @@ appointmentRouter.post('/', function(req, res) {
 
 appointmentRouter.put('/:id/', function(req, res){
     var id = req.params.id;
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.body.patid;
+    var practid = auth.getPractId(req.get("token")) || req.body.practid;
     db.appointment.update(req.body,
         {where : {"aid":id, "patid":patid}}    
     ).then(result => res.json({
@@ -82,7 +116,8 @@ appointmentRouter.put('/:id/', function(req, res){
 
 appointmentRouter.delete("/:id", function(req, res){
     var id = req.params.id;
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.body.patid;
+    var practid = auth.getPractId(req.get("token")) || req.body.practid;
     db.appointment.destroy({
         where:{"aid":id, "patid" : patid}
     }).then(result => res.json({
@@ -93,6 +128,29 @@ appointmentRouter.delete("/:id", function(req, res){
         error: true,
         error: error
     }))
+})
+
+appointmentRouter.get("/:id/changenoticed", function(req, res){
+    var patid = auth.getPatId(req.get("token"));
+    var id = req.params.id;
+    db.appointment.find({
+        where : {"patid" : patid, "aid" : id}
+    }).then(appointment => {
+        console.log(appointment.modified)
+        if(appointment.modified == true){
+            appointment.modified = false;
+            appointment.save()
+            res.json({
+                "error" : "false",
+                "cmessage" : "change noticed"
+            })
+        } else {
+            res.json({
+                "error" : "true",
+                "message" : "appointment has no recent changes"
+            })
+        }
+    })
 })
 
 module.exports = appointmentRouter;

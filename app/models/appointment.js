@@ -52,6 +52,10 @@ module.exports = function(sequelize, Sequelize) {
 
         stationarycaseid: {
             type: Sequelize.INTEGER
+        },
+
+        modified: {
+            type : Sequelize.BOOLEAN
         }
     });
  

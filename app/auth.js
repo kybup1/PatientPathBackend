@@ -28,4 +28,9 @@ auth.getPatId = function (token){
     return decoded.patid;
 }
 
+auth.getPractId = function (token){
+    var decoded = jwt.decode(token, secret);
+    return decoded.practid;
+}
+
 module.exports = auth;

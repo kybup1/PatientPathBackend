@@ -6,7 +6,7 @@ var auth = require("../auth");
 var stationarycaseRouter = express.Router();
 
 stationarycaseRouter.get("/", function(req, res){
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");    
     db.stationarycase.findAll({
         where : {"patid" : patid},
         order : ['startdate']
@@ -16,7 +16,7 @@ stationarycaseRouter.get("/", function(req, res){
 })
 
 stationarycaseRouter.get("/full", function(req, res){
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");    
     db.stationarycase.findAll({
         where : {"patid" : patid},
         order : ['startdate'],
@@ -28,7 +28,7 @@ stationarycaseRouter.get("/full", function(req, res){
 
 stationarycaseRouter.get("/:id", function(req, res){
     var id = req.params.id;
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
     db.stationarycase.findAll({
         where : {"patid" : patid,
                 "caseid" : id}
@@ -39,7 +39,7 @@ stationarycaseRouter.get("/:id", function(req, res){
 
 stationarycaseRouter.get("/:id/full", function(req, res){
     var id = req.params.id;
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
     db.stationarycase.findAll({
         where : {"patid" : patid,
                 "caseid" : id},
@@ -50,40 +50,46 @@ stationarycaseRouter.get("/:id/full", function(req, res){
 })
 
 stationarycaseRouter.post("/", function(req, res){
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
     var instid = req.body.instid || req.get("instid");
+    var episodeid = req.body.episodeid || req.get("episodeid");
     if(!instid){
         res.json({
             "error": "please send the instid field with the id of the coresponding institution"
         })
-    }
-    var episodeid = req.body.episodeid || req.get("episodeid");
-    if(!episodeid){
+    } else if(!episodeid){
         res.json({
-            "error": "please send the episodeid field with the id of the coresponding treatmentepisode"
+            error : "true", 
+            message : "please send the episodeid field with the id of the coresponding treatmentepisode"
         })
+    } else if (!req.body.name || !req.body.startdate || req.body.enddate){
+        res.json({
+            error : "true",
+            message : "Please provide the name, start- and enddate in the body"
+        })
+    } else {
+        db.stationarycase.create({
+            "name" : req.body.name,
+            "description" : req.body.description,
+            "patid" : patid,
+            "instid" : instid,
+            "episodeid" : episodeid,
+            "startdate" : req.body.startdate,
+            "enddate" : req.body.enddate,
+        }).then(result => res.json({
+            error: false,
+            message: 'created!'
+        }))
+        .catch(error => res.json({
+            error: true,
+            error: error
+        }));
     }
-    db.stationarycase.create({
-        "name" : req.body.name,
-        "description" : req.body.description,
-        "patid" : patid,
-        "instid" : instid,
-        "episodeid" : episodeid,
-        "startdate" : req.body.startdate,
-        "enddate" : req.body.enddate,
-    }).then(result => res.json({
-        error: false,
-        message: 'created!'
-    }))
-    .catch(error => res.json({
-        error: true,
-        error: error
-    }));
 })
 
 stationarycaseRouter.put("/:id", function(req, res){
     var id = req.params.id;
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
     db.stationarycase.update(req.body, 
         {where:{"caseid":id, "patid" : patid}}
     ).then(result => res.json({
@@ -98,7 +104,7 @@ stationarycaseRouter.put("/:id", function(req, res){
 
 stationarycaseRouter.delete("/:id", function(req, res){
     var id = req.params.id;
-    var patid = auth.getPatId(req.get("token"));
+    var patid = auth.getPatId(req.get("token")) || req.get("patid");
     db.stationarycase.destroy({
         where : {"caseid" : id, "patid" : patid}
     }).then(result => res.json({

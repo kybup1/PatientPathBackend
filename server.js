@@ -12,6 +12,7 @@ var institutionRouter = require("./app/routers/institutionRouter");
 var treatmentepisodeRouter = require("./app/routers/treatmentepisodeRouter");
 var stationarycaseRouter = require("./app/routers/stationarycaseRouter");
 var loginRouter = require("./app/routers/loginRouter");
+var checklistRouter = require("./app/routers/checklistRouter");
 var auth = require("./app/auth");
 
 //For BodyParser
@@ -24,6 +25,7 @@ app.use('/appointment', auth.authenticate, appointmentRouter);
 app.use('/institution', auth.authenticate, institutionRouter);
 app.use('/treatmentepisode', auth.authenticate, treatmentepisodeRouter);
 app.use('/stationarycase', auth.authenticate, stationarycaseRouter);
+app.use("/checklist", auth.authenticate, checklistRouter);
 app.use('/', loginRouter);
 app.listen(54321, function(err) {
     
