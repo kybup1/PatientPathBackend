@@ -27,7 +27,6 @@ checklistRouter.post("/", function(req, res){
         "name" : req.body.name
     })
     .then(function(checklist){
-        console.log("triggerd")
         db.appointment.find({
             where : {"aid" : aid}
         }).then(function(appointment){

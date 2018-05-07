@@ -26,4 +26,18 @@ patientRouter.get("/full", function(req, res) {
     });
 });
 
+patientRouter.get("/all", function(req, res){
+    if(auth.getPractId(req.get("token")) != null){
+        db.patient.findAll()
+        .then(patients => {
+            res.json(patients)
+        })
+    } else {
+        res.json({
+            error : true,
+            message : "Only available for practitioners"
+        })
+    }
+})
+
 module.exports = patientRouter

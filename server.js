@@ -7,6 +7,7 @@ var env = require('dotenv').load();
 var models = require("./app/models");
 var db = require("./app/models/index");
 var patientRouter = require("./app/routers/patientRouter");
+var practitionerRouter = require("./app/routers/practitionerRouter");
 var appointmentRouter = require("./app/routers/appointmentrouter");
 var institutionRouter = require("./app/routers/institutionRouter");
 var treatmentepisodeRouter = require("./app/routers/treatmentepisodeRouter");
@@ -20,7 +21,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 console.log("start");
+
+app.all('/*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "*");
+    next();
+});
+
 app.use("/patient", auth.authenticate, patientRouter);
+app.use("/practitioner", auth.authenticate, practitionerRouter);
 app.use('/appointment', auth.authenticate, appointmentRouter);
 app.use('/institution', auth.authenticate, institutionRouter);
 app.use('/treatmentepisode', auth.authenticate, treatmentepisodeRouter);
@@ -43,15 +52,15 @@ app.listen(54321, function(err) {
 //     "category" : "Hausarzt",
 //     "phone" : "035 684 15 65"
 // }).then(function(institution){
-//     db.practicioner.create({
+//     db.practitioner.create({
 //         "firstname" : "Hans",
 //         "lastname" : "Wenger",
 //         "title" : "Dr. med",
 //         "role" : "Hausarzt",
 //         "phone" : "068 8987 898498",
 //         "email" : "drwenger@bluwin.ch"
-//     }).then(function(practicioner){
-//         practicioner.setInstitution(institution);
+//     }).then(function(practitioner){
+//         practitioner.setInstitution(institution);
 //     })
 // });
 
@@ -63,14 +72,14 @@ app.listen(54321, function(err) {
 //     "phone" : "068 844 89 65",
 //     "email" : "info@klinikhoeheweg.ch"
 // }).then(function(institution){
-//     db.practicioner.create({
+//     db.practitioner.create({
 //         "firstname" : "Hüft",
 //         "lastname" : "Raus",
 //         "title" : "Dr. med",
 //         "role" : "Chirurg",
 //         "phone" : "098 8987 456 4565",
-//     }).then(function(practicioner){
-//         practicioner.setInstitution(institution);
+//     }).then(function(practitioner){
+//         practitioner.setInstitution(institution);
 //     })
 // });
 

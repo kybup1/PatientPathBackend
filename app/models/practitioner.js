@@ -1,6 +1,6 @@
 module.exports = function(sequelize, Sequelize) {
  
-    var practicioner = sequelize.define('practicioner', {
+    var practitioner = sequelize.define('practitioner', {
  
         practid: {
             autoIncrement: true,
@@ -46,6 +46,6 @@ module.exports = function(sequelize, Sequelize) {
         }
     });
  
-    return practicioner;
+    return practitioner;
  
 }

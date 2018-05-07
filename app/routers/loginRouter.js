@@ -38,7 +38,7 @@ loginRouter.post("/login/patient", function(req, res){
     }
 })
 
-loginRouter.post("/login/practicioner", function(req, res){
+loginRouter.post("/login/practitioner", function(req, res){
     if(req.body.username && req.body.password){
         var username = req.body.username;
         var password = req.body.password;
@@ -51,10 +51,10 @@ loginRouter.post("/login/practicioner", function(req, res){
                     "error" : "User not found!"
                 })
             } else {
-                user.getPracticioner().then(function(practicioner){
+                user.getPractitioner().then(function(practitioner){
                     var payload = {
                         "username" : user.username,
-                        "practid" : practicioner.practid
+                        "practid" : practitioner.practid
                     }
                     var token = jwt.encode(payload, secret)
                     res.json({
@@ -92,21 +92,21 @@ loginRouter.post("/signup/patient", function(req, res){
     }
 })
 
-loginRouter.post("/signup/practicioner", function(req, res){
+loginRouter.post("/signup/practitioner", function(req, res){
     if(req.body.firstname && req.body.lastname && req.body.username && req.body.password){
         db.user.create({
             "username" : req.body.username,
             "password" : req.body.password
         }).then(function(user){
-            db.practicioner.create({
+            db.practitioner.create({
                 "firstname" : req.body.firstname,
                 "lastname" : req.body.lastname,
                 "title" : reo.body.title,
                 "role" : req.body.role,
                 "email" : req.body.email,
                 "phone" : req.body.phone
-            }).then(function(practicioner){
-                user.setPracticioner(practicioner)
+            }).then(function(practitioner){
+                user.setpractitioner(practitioner)
                 res.json({
                     "Success" : "Patient created!"
                 })
