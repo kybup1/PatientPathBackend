@@ -56,6 +56,9 @@ module.exports = function(sequelize, Sequelize) {
 
         modified: {
             type : Sequelize.BOOLEAN
+        },
+        changerequest: {
+            type : Sequelize.BOOLEAN
         }
     });
  

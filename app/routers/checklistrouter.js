@@ -16,6 +16,21 @@ checklistRouter.get('/:id', function(req, res) {
 
 })
 
+checklistRouter.get('/:id/changeitem', function(req, res){
+    var id = req.params.id;
+    db.checklistitem.find({
+        where : {"chklstitemid" : id}
+        }).then(checklistitem => {
+            checklistitem.checked = !checklistitem.checked;
+            console.log(checklistitem.checked)
+            checklistitem.save()
+            return checklistitem
+        })
+    .then(function(cheklistitem){
+        res.json(cheklistitem)
+    })
+})
+
 checklistRouter.post("/", function(req, res){
     var aid = req.get("aid") || req.body.aid;
     if(!aid){
@@ -40,7 +55,8 @@ checklistRouter.post("/:id/additem", function(req, res){
     var id = req.params.id;
     db.checklistitem.create({
         "name" : req.body.name,
-        "chklstid" : id
+        "chklstid" : id,
+        "checked" : false
     }).then(function(chklstitem){
         res.json(chklstitem)
     })

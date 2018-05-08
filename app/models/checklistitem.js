@@ -12,6 +12,10 @@ module.exports = function(sequelize, Sequelize) {
             type: Sequelize.STRING,
             notEmpty: true
         },
+
+        checked: {
+            type: Sequelize.BOOLEAN
+        },
  
         chklstid: {
             type: Sequelize.INTEGER,

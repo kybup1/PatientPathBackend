@@ -93,7 +93,8 @@ appointmentRouter.post('/', function(req, res) {
         "stationarycaseid" : req.body.stationarycaseid,
         "instid" : req.body.instid,
         "practid" : practid,
-        "modified" : true
+        "modified" : true,
+        "changerequest" : false
     }).then(response => {
         res.json(response)
     })
