@@ -36,7 +36,7 @@ app.use('/treatmentepisode', auth.authenticate, treatmentepisodeRouter);
 app.use('/stationarycase', auth.authenticate, stationarycaseRouter);
 app.use("/checklist", auth.authenticate, checklistRouter);
 app.use('/', loginRouter);
-app.listen(54321, function(err) {
+app.listen(1234, function(err) {
     
 });
 
