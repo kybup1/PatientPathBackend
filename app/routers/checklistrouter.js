@@ -6,7 +6,6 @@ var checklistRouter = express.Router();
 
 checklistRouter.get('/:id', function(req, res) {
     var id = req.params.id;
-    console.log(id)
     db.checklist.find({
         where : {"chklstid" : id},
         include : [{all : true}]
@@ -16,16 +15,26 @@ checklistRouter.get('/:id', function(req, res) {
 
 })
 
+checklistRouter.delete('/:id', function(req, res) {
+    var id = req.params.id;
+    db.checklist.destroy({
+        where : {"chklstid" : id},
+        include: [{
+            model: db.checklistitem,
+            where: { "chklstid": id }
+        }]
+    })
+})
+
 checklistRouter.get('/:id/changeitem', function(req, res){
     var id = req.params.id;
     db.checklistitem.find({
         where : {"chklstitemid" : id}
-        }).then(checklistitem => {
-            checklistitem.checked = !checklistitem.checked;
-            console.log(checklistitem.checked)
-            checklistitem.save()
-            return checklistitem
-        })
+    }).then(checklistitem => {
+        checklistitem.checked = !checklistitem.checked;
+        checklistitem.save()
+        return checklistitem
+    })
     .then(function(cheklistitem){
         res.json(cheklistitem)
     })

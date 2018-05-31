@@ -1,9 +1,9 @@
 var express = require('express');
 var app = express();
-var passport   = require('passport')
-var session    = require('express-session')
+
 var bodyParser = require('body-parser')
 var env = require('dotenv').load();
+var cors = require('cors');
 var models = require("./app/models");
 var db = require("./app/models/index");
 var patientRouter = require("./app/routers/patientRouter");
@@ -22,11 +22,7 @@ app.use(bodyParser.json());
 
 console.log("start");
 
-app.all('/*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "*");
-    next();
-});
+app.use(cors());
 
 app.use("/patient", auth.authenticate, patientRouter);
 app.use("/practitioner", auth.authenticate, practitionerRouter);
