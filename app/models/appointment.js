@@ -57,7 +57,13 @@ module.exports = function(sequelize, Sequelize) {
         modified: {
             type : Sequelize.BOOLEAN
         },
+        olddate : {
+            type : Sequelize.DATE
+        },
         changerequest: {
+            type : Sequelize.BOOLEAN
+        }, 
+        canceled: {
             type : Sequelize.BOOLEAN
         }
     });

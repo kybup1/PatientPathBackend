@@ -17,6 +17,10 @@ module.exports = function(sequelize, Sequelize) {
             type: Sequelize.STRING,
             notEmpty: true
         },
+
+        birthdate : {
+            type : Sequelize.DATE
+        },
  
         email: {
             type: Sequelize.STRING,

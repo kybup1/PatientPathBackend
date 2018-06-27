@@ -15,15 +15,19 @@ var stationarycaseRouter = require("./app/routers/stationarycaseRouter");
 var loginRouter = require("./app/routers/loginRouter");
 var checklistRouter = require("./app/routers/checklistRouter");
 var auth = require("./app/auth");
+var hl7parser = require("./app/interface/hl7v2_SIU/hl7parser");
+var schedule = require('node-schedule');
 
-//For BodyParser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-console.log("start");
+console.log("PatientPath backend started successfully!");
 
+//Adding cors support to the REST API
 app.use(cors());
 
+//Adding the different routers to their corresponding url.
+//Adding the authenticate method to each router that has restricted access
 app.use("/patient", auth.authenticate, patientRouter);
 app.use("/practitioner", auth.authenticate, practitionerRouter);
 app.use('/appointment', auth.authenticate, appointmentRouter);
@@ -32,9 +36,23 @@ app.use('/treatmentepisode', auth.authenticate, treatmentepisodeRouter);
 app.use('/stationarycase', auth.authenticate, stationarycaseRouter);
 app.use("/checklist", auth.authenticate, checklistRouter);
 app.use('/', loginRouter);
+
+//Starting the server on port 1234
 app.listen(1234, function(err) {
     
 });
+
+
+// Every 15 seconds the hl7parser will execute
+var j = schedule.scheduleJob('*/30 * * * * *', function(){
+    try {
+        hl7parser.readHL7Messages();
+    } catch (error) {
+        console.log(error);
+    }
+    
+});
+
 
 // for testing
 

@@ -9,6 +9,7 @@ var db = {};
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
  
+//import of the different entities in the database
 db.user = require(path +'user.js')(sequelize, Sequelize);
 db.patient = require(path + 'patient.js')(sequelize, Sequelize);
 db.treatmentepisode = require(path +'treatmentepisode.js')(sequelize, Sequelize);
@@ -20,6 +21,7 @@ db.treatmentepisode = require(path +'treatmentepisode.js')(sequelize, Sequelize)
 db.appointment = require(path + 'appointment.js')(sequelize, Sequelize);
 db.stationarycase = require(path + 'stationarycase.js')(sequelize, Sequelize);
 
+//Definition of the associations in the database
 db.patient.hasMany(db.appointment, { foreignKey: 'patid' });
 db.appointment.belongsTo(db.patient, { foreignKey: 'patid' });
 

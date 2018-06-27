@@ -1,0 +1,5 @@
+﻿MSH|^~\&|MCC||Fremdsystem||20081207035439||SIU^S12^SIU_S12|209810|P|2.5|||AL|NE||UTF-8||\r
+SCH|24850||||PHY-1|Bemerkung||Operation des Hüftgelenks|240|MIN|^^M60^20180625070000||||||||||||||0|\r
+PID|1|0001003103|0001003103||Brönnimann^Elisabeth||19370503000000|w|||Strasse^^Biel^^2502^CH|||||||||||||||||||0||||||||||\r
+PV1|1|I|ST-91^^^FA-ACH||||||||||||||||702659|||||||||||||||||||||||||20150402114000||||||\r
+NTE||BW|Die Operation dauert etwa vier Stunden||

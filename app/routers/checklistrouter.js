@@ -2,6 +2,9 @@ var express = require("express");
 var app = express();
 var db = require("../models/index");
 
+//This file contains all the functions for the API requests to read and manipulate checklists and checklistitems in the Database
+
+
 var checklistRouter = express.Router();
 
 checklistRouter.get('/:id', function(req, res) {
@@ -17,6 +20,7 @@ checklistRouter.get('/:id', function(req, res) {
 
 checklistRouter.delete('/:id', function(req, res) {
     var id = req.params.id;
+    //Deletes the checklist with all linked checklistitems
     db.checklist.destroy({
         where : {"chklstid" : id},
         include: [{
@@ -60,7 +64,7 @@ checklistRouter.post("/", function(req, res){
     }) 
 })
 
-checklistRouter.post("/:id/additem", function(req, res){
+checklistRouter.post("/:id/additem/", function(req, res){
     var id = req.params.id;
     db.checklistitem.create({
         "name" : req.body.name,
@@ -71,10 +75,10 @@ checklistRouter.post("/:id/additem", function(req, res){
     })
 })
 
-checklistRouter.delete("/:id/removeitem/", function(req, res){
+checklistRouter.delete("/removeitem/:id", function(req, res){
     var id = req.params.id;
     db.checklistitem.destroy({
-        where : {"chklstid" : id, "name" : req.body.name}
+        where : {"chklstitemid" : id}
     }).then(function(response){
         res.json({
             "error" : "false"

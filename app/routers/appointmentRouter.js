@@ -4,16 +4,19 @@ var db = require("../models/index");
 var auth = require("../auth");
 const Op = db.Sequelize.Op;
 
+//This file contains all the functions for the API request to read and manipulate appointments in the Database
 
 var appointmentRouter = express.Router();
 
 appointmentRouter.get('/', function(req, res) {
     var patid = auth.getPatId(req.get("token")) || req.get("patid");
     var practid = auth.getPractId(req.get("token"));
+    //Depending if a practitioner or a patient sends the request a different function is executed
     if(practid != null){
         db.appointment.findAll({
             where : {
-                "practid" : practid
+                "practid" : practid,
+                "canceled" : false
             }, 
             order : ['startdate']
         }) .then(appointments => {
@@ -23,6 +26,8 @@ appointmentRouter.get('/', function(req, res) {
         db.appointment.findAll({
             where : {
                 "patid" : patid,
+                "canceled" : false,
+
             }, 
             order : ['startdate']
         }) .then(appointments => {
@@ -37,7 +42,8 @@ appointmentRouter.get('/full', function(req, res) {
     if(practid != null){
         db.appointment.findAll({
             where : {
-                "practid" : practid
+                "practid" : practid,
+                "canceled" : false
             }, 
             order : ['startdate'],
             include : [{all : true}]
@@ -48,6 +54,7 @@ appointmentRouter.get('/full', function(req, res) {
         db.appointment.findAll({
             where : {
                 "patid" : patid,
+                "canceled" : false
             }, 
             order : ['startdate'],
             include : [{all : true}]
@@ -61,7 +68,8 @@ appointmentRouter.get('/:id', function(req, res) {
     var patid = auth.getPatId(req.get("token"));
     var id = req.params.id;
     db.appointment.find({
-        where : {'patid' : patid, 
+        where : {'patid' : patid,
+        "canceled" : false, 
         'aid' : id}
     }) .then(appointment => {
         res.json(appointment)
@@ -72,7 +80,8 @@ appointmentRouter.get('/:id/full', function(req, res) {
     var patid = auth.getPatId(req.get("token"));
     var id = req.params.id;
     db.appointment.find({
-        where : {'patid' : patid, 
+        where : {'patid' : patid,
+        "canceled" : false, 
         'aid' : id},
         include : [{all : true}]
     }) .then(appointment => {
@@ -102,11 +111,19 @@ appointmentRouter.post('/', function(req, res) {
 
 appointmentRouter.put('/:id/', function(req, res){
     var id = req.params.id;
+    
     var patid = auth.getPatId(req.get("token")) || req.body.patid;
     var practid = auth.getPractId(req.get("token")) || req.body.practid;
-    db.appointment.update(req.body,
-        {where : {"aid":id, "patid":patid}}    
-    ).then(result => res.json({
+    db.appointment.find({
+        where : {"aid":id, "patid":patid}
+    }).then(appointment => {
+        req.body.olddate = appointment.startdate
+    }).then(result => {
+        db.appointment.update(req.body,
+            {where : {"aid":id, "patid":patid}}  
+        )
+    })
+    .then(result => res.json({
         error: false,
         message: 'updated!'
     }))

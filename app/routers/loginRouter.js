@@ -5,6 +5,8 @@ var jwt = require("jwt-simple");
 
 var loginRouter = express.Router();
 
+//In this file contains the different functions for the login and signup requests
+
 var auth = require("../auth");
 var secret = auth.secret;
 
@@ -69,7 +71,7 @@ loginRouter.post("/login/practitioner", function(req, res){
 })
 
 loginRouter.post("/signup/patient", function(req, res){
-    if(req.body.firstname && req.body.lastname && req.body.username && req.body.password){
+    if(req.body.firstname && req.body.lastname && req.body.birthdate && req.body.username && req.body.password){
         db.user.create({
             "username" : req.body.username,
             "password" : req.body.password
@@ -77,6 +79,7 @@ loginRouter.post("/signup/patient", function(req, res){
             db.patient.create({
                 "firstname" : req.body.firstname,
                 "lastname" : req.body.lastname,
+                "birthdate" : req.body.birthdate,
                 "email" : req.body.email
             }).then(function(patient){
                 user.setPatient(patient)

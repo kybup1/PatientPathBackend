@@ -4,6 +4,8 @@ var db = require("../models/index");
 
 var institutionRouter = express.Router();
 
+//This file contains all the functions for the API request to read and manipulate institutions in the Database
+
 institutionRouter.get("/", function(req, res){
     db.institution.findAll({
 
